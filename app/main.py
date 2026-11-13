@@ -5,11 +5,11 @@ app = FastAPI(title="Cloud Containers Lab", version="1.0")
 
 @app.get("/")
 def index():
-    return {"message": "FastAPI in Docker", "version": "v1"}
+    return {"message": "FastAPI in Docker", "version": "v2"}
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "version": "v1"}
+    return {"status": "ok", "version": "v2"}
 
 @app.get("/info")
 def info():
