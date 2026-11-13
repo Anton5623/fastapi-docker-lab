@@ -1,0 +1,31 @@
+name: Deploy to Azure Container Apps
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Log in to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Build and push image to ACR
+      run: |
+        az acr login --name caf774518466acr
+        docker build -t caf774518466acr.azurecr.io/fastapi-lab:${{ github.sha }} .
+        docker push caf774518466acr.azurecr.io/fastapi-lab:${{ github.sha }}
+
+    - name: Deploy to Container App
+      uses: azure/container-apps-deploy-action@v1
+      with:
+        resourceGroup: rg-fastapi-lab
+        containerAppName: fastapi-lab-student7
+        imageToDeploy: caf774518466acr.azurecr.io/fastapi-lab:${{ github.sha }}
